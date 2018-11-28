@@ -1,6 +1,6 @@
 html, body { height: 100%; }
 
-.container { width: 100%; border: 1px; }
+.container { width: 100%; border: 1px #900; }
 .clearBoth { clear:both; }
 .field_titles { background-color: #5F9EA0; color: #FFF; }
 .full-height { height: 100%; }
@@ -9,3 +9,24 @@ div.fields_inline { float:left; }
 
 tr.data:nth-child(even) { background-color: #CCC; }
 tr.data:nth-child(odd) { background-color: #EEE; }
+
+a:link { text-decoration: none; color: #EEE; }
+a:visited { text-decoration: none; color: #EEE; }
+a:hover { text-decoration: none; color: #EEE; }
+a:active { text-decoration: none; color: #EEE; }
+
+ul { list-style: none }
+
+li.button {
+  background-color: #555;
+  border: none;
+  color: white;
+  padding: 5px 22px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 2px;
+}
+
+li.button:hover { background-color: #999; cursor: pointer; }

@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/swtest.css">
   </head>
   <body>
+    <li class="button" onclick="location='index.html'">Home</li>
     <h2>Comments Report</h2>
     <div class="container">
 <?php
@@ -41,8 +42,9 @@ foreach($groups as $group) {
   }
 
   $results = $mysqli->query($sql);
+  print "<h4 style=\"color: #966;\">$results->num_rows records</h4>" . PHP_EOL;
   // Start query results loop
-  print "<table>";
+  print "<table>" . PHP_EOL;
   foreach($results as $idx => $result) {
     // Let's just grab the field names for only the first iteration
     if(!$idx) {
@@ -63,7 +65,61 @@ foreach($groups as $group) {
 
   $results->close();
 }
+
+// Start the group exclusion query builder now to
+// get everything not part of the grouped items
+$sql = "SELECT * FROM sweetwater_test WHERE ";
+foreach($groups as $group) {
+  if(preg_match('/\\_/', $group)) {
+    // Break the element up into the two separate contexts
+    $qry_parts = explode('_', $group);
+    $part_idx = 0;
+    // Include the first element of the qry_parts array into the SQL string
+    // letting the do|while loop grab the second one to concat to it.
+    $sql .= "comments NOT LIKE '%$qry_parts[$part_idx]%' AND ";
+    do {
+      // Iterate now instead of post concat operation to prevent
+      // reading the first element of the parts array.
+      $part_idx++;
+      $sql .= "comments NOT LIKE '%$qry_parts[$part_idx]%' AND ";
+    } while($part_idx < count($qry_parts) - 1);
+  } else {
+    if($group != 'signature') {
+      $sql .= "comments NOT LIKE '%$group%' AND ";
+    } else {
+      $sql .= "comments NOT LIKE '%$group%'";
+    }
+  }
+}
+
+$results = $mysqli->query($sql);
+print "<h3>Everything Else</h3>" . PHP_EOL;
+print "<h4 style=\"color: #966;\">$results->num_rows records</h4>" . PHP_EOL;
+// Start query results loop
+print "<table>";
+foreach($results as $idx => $result) {
+  // Let's just grab the field names for only the first iteration
+  if(!$idx) {
+    print "<tr class=\"field_titles\">" . PHP_EOL;
+    foreach(array_keys($result) as $field) {
+      if($idx) break;
+      print "<td>$field</td>" . PHP_EOL;
+    }
+    print "</tr>" . PHP_EOL;
+  }
+  print "<tr class=\"data\">" . PHP_EOL;
+  foreach(array_values($result) as $value) {
+    print "<td>$value</td>" . PHP_EOL;
+  }
+  print "</tr>" . PHP_EOL;
+}
+print "</table>";
+
+$results->close();
+
+
 ?>
     </div> <!-container close->
+    <li class="button" onclick="location='index.html'">Home</li>
   </body>
 </html>
